@@ -34,136 +34,136 @@ Move, resize, lean, flip and rotate a photo with OpenCV.
 
 ## Program
 
-#### 1. Read the photo
+#### 1.
 
 ```python
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
-bgr = cv2.imread("ramitha.png")
-img = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
-rows, cols = img.shape[:2]
 ```
 
-#### 2. Shift the photo
+#### 2.
 
 ```python
-move = np.float32([[1, 0, 50], [0, 1, 80]])
-shifted = cv2.warpAffine(img, move, (cols, rows))
-plt.figure(figsize=(8, 4))
-plt.subplot(1, 2, 1)
-plt.imshow(img)
-plt.title("Original")
-plt.axis("off")
-plt.subplot(1, 2, 2)
-plt.imshow(shifted)
-plt.title("Shifted right and down")
-plt.axis("off")
-plt.show()
+image = cv2.imread('ramitha.png')
 ```
 
-#### 3. Scale the photo
+#### 3.
 
 ```python
-small = cv2.resize(img, None, fx=0.5, fy=0.5)
-big = cv2.resize(img, None, fx=2, fy=2)
-plt.figure(figsize=(10, 4))
-plt.subplot(1, 3, 1)
-plt.imshow(img)
-plt.title("Original")
-plt.axis("off")
-plt.subplot(1, 3, 2)
-plt.imshow(small)
-plt.title("0.5x")
-plt.axis("off")
-plt.subplot(1, 3, 3)
-plt.imshow(big)
-plt.title("2x")
-plt.axis("off")
-plt.show()
+plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+plt.title("Original Image")
+plt.axis('off')
 ```
 
-#### 4. Shear the photo
+#### 4.
 
 ```python
-shear_x = np.float32([[1, 0.35, 0], [0, 1, 0]])
-shear_y = np.float32([[1, 0, 0], [0.25, 1, 0]])
-lean_x = cv2.warpAffine(img, shear_x, (int(cols * 1.4), rows))
-lean_y = cv2.warpAffine(img, shear_y, (cols, int(rows * 1.3)))
-plt.figure(figsize=(10, 4))
-plt.subplot(1, 3, 1)
-plt.imshow(img)
-plt.title("Original")
-plt.axis("off")
-plt.subplot(1, 3, 2)
-plt.imshow(lean_x)
-plt.title("Horizontal shear")
-plt.axis("off")
-plt.subplot(1, 3, 3)
-plt.imshow(lean_y)
-plt.title("Vertical shear")
-plt.axis("off")
-plt.show()
+tx, ty = 100, 50
+M_translation = np.float32([[1, 0, tx], [0, 1, ty]])
+translated_image = cv2.warpAffine(image, M_translation, (image.shape[1], image.shape[0]))
 ```
 
-#### 5. Flip the photo
+#### 5.
 
 ```python
-plt.figure(figsize=(10, 3))
-titles = ["Original", "Horizontal", "Vertical", "Both"]
-pics = [img, cv2.flip(img, 1), cv2.flip(img, 0), cv2.flip(img, -1)]
-for i in range(4):
-    plt.subplot(1, 4, i + 1)
-    plt.imshow(pics[i])
-    plt.title(titles[i])
-    plt.axis("off")
-plt.show()
+plt.imshow(cv2.cvtColor(translated_image, cv2.COLOR_BGR2RGB))
+plt.title("Translated Image")
+plt.axis('off')
 ```
 
-#### 6. Rotate the photo
+#### 6.
 
 ```python
-centre = (cols / 2, rows / 2)
-rot45 = cv2.warpAffine(img, cv2.getRotationMatrix2D(centre, 45, 1), (cols, rows))
-rot90 = cv2.warpAffine(img, cv2.getRotationMatrix2D(centre, 90, 1), (cols, rows))
-plt.figure(figsize=(10, 4))
-plt.subplot(1, 3, 1)
-plt.imshow(img)
-plt.title("Original")
-plt.axis("off")
-plt.subplot(1, 3, 2)
-plt.imshow(rot45)
-plt.title("Rotated 45")
-plt.axis("off")
-plt.subplot(1, 3, 3)
-plt.imshow(rot90)
-plt.title("Rotated 90")
-plt.axis("off")
-plt.show()
+fx, fy = 5.0, 2.0
+scaled_image = cv2.resize(image, None, fx=fx, fy=fy, interpolation=cv2.INTER_LINEAR)
+```
+
+#### 7.
+
+```python
+plt.imshow(cv2.cvtColor(scaled_image, cv2.COLOR_BGR2RGB))
+plt.title("Scaled Image")
+plt.axis('off')
+```
+
+#### 8.
+
+```python
+shear_matrix = np.float32([[1, 0.5, 0], [0.5, 1, 0]])
+sheared_image = cv2.warpAffine(image, shear_matrix, (image.shape[1], image.shape[0]))
+```
+
+#### 9.
+
+```python
+plt.imshow(cv2.cvtColor(sheared_image, cv2.COLOR_BGR2RGB))
+plt.title("Sheared Image")
+plt.axis('off')
+```
+
+#### 10.
+
+```python
+reflected_image = cv2.flip(image, 2)
+```
+
+#### 11.
+
+```python
+plt.imshow(cv2.cvtColor(reflected_image, cv2.COLOR_BGR2RGB))
+plt.title("Reflected Image")
+plt.axis('off')
+```
+
+#### 12.
+
+```python
+(height, width) = image.shape[:2]
+angle = 45
+center = (width // 2, height // 2)
+M_rotation = cv2.getRotationMatrix2D(center, angle, 1)
+rotated_image = cv2.warpAffine(image, M_rotation, (width, height))
+```
+
+#### 13.
+
+```python
+plt.imshow(cv2.cvtColor(rotated_image, cv2.COLOR_BGR2RGB))
+plt.title("Rotated Image")
+plt.axis('off')
+```
+
+#### 14.
+
+```python
+x, y, w, h = 100, 100, 200, 150
+cropped_image = image[y:y+h, x:x+w]
+```
+
+#### 15.
+
+```python
+plt.imshow(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
+plt.title("Cropped Image")
+plt.axis('off')
 ```
 
 ## Output
 
-### i) Translation
+<img width="389" height="410" alt="Original Image" src="output/01-original.png" />
 
-<img width="639" height="323" alt="Translated photo" src="output/01-translation.png" />
+<img width="389" height="410" alt="Translated Image" src="output/02-translation.png" />
 
-### ii) Scaling
+<img width="515" height="239" alt="Scaled Image" src="output/03-scaling.png" />
 
-<img width="794" height="269" alt="Scaled photo" src="output/02-scaling.png" />
+<img width="389" height="410" alt="Sheared Image" src="output/04-shear.png" />
 
-### iii) Shear
+<img width="389" height="410" alt="Reflected Image" src="output/05-flip.png" />
 
-<img width="794" height="337" alt="Sheared photo" src="output/03-shear.png" />
+<img width="389" height="410" alt="Rotated Image" src="output/06-rotation.png" />
 
-### iv) Flip
-
-<img width="795" height="209" alt="Flipped photo" src="output/04-flip.png" />
-
-### v) Rotation
-
-<img width="794" height="269" alt="Rotated photo" src="output/05-rotation.png" />
+<img width="512" height="410" alt="Cropped Image" src="output/07-crop.png" />
 
 ## Result
 
